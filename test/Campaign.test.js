@@ -56,4 +56,14 @@ describe("Campaigns", () => {
       assert(err);
     }
   });
+  it("allows a manager to create a request", async () => {
+      await campaign.methods
+      .createRequest('Buy stuff', '100', accounts[1])
+      .send({
+          from: accounts[0],
+          gas: '1000000'
+      });
+      const request = await campaign.methods.requests(0).call();
+      assert.equal('Buy stuff', request.description);
+  })
 });
