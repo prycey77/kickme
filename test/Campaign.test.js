@@ -29,21 +29,31 @@ beforeEach(async () => {
   );
 });
 
-describe('Campaigns', ()=> {
-    it('deploys a factory and a campaign', () => {
-        assert.ok(factory.options.address);
-        assert.ok(campaign.options.address);
+describe("Campaigns", () => {
+  it("deploys a factory and a campaign", () => {
+    assert.ok(factory.options.address);
+    assert.ok(campaign.options.address);
+  });
+  it("marks caller as the campaign manager", async () => {
+    const managerAddress = await campaign.methods.manager().call();
+    assert.equal(accounts[0], managerAddress);
+  });
+  it("allows people to contribute money and marks them as contributors", async () => {
+    await campaign.methods.contribute().send({
+      value: "200",
+      from: accounts[1],
     });
-    it('marks caller as the campaign manager', async () => {
-        const managerAddress = await campaign.methods.manager().call();
-        assert.equal(accounts[0], managerAddress)
-    })
-    it('allows people to contribute money and marks them as contributors', async () => {
-        await campaign.methods.contribute().send({
-            value: '200',
-            from: accounts[1]
-        })
-        const isContributor = await campaign.methods.approvers(accounts[1]).call();
-        assert(isContributor)
-    })
+    const isContributor = await campaign.methods.approvers(accounts[1]).call();
+    assert(isContributor);
+  });
+  it("requires a minimum contribution", async () => {
+    try {
+      await campaign.methods.contribute().send({
+        value: "50",
+        from: accounts[0],
+      });
+    } catch (err) {
+      assert(err);
+    }
+  });
 });
