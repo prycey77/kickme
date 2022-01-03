@@ -1,12 +1,13 @@
-const HDWalletProvider = require('@truffle/hdwallet-provider');
+const HDWalletProvider = require("@truffle/hdwallet-provider");
 const Web3 = require("web3");
 const compiledFactory = require("./build/CampaignFactory.json");
-console.log(process.env.MNEMONIC)
-console.log(process.env.RINKBY_API_KEY)
+console.log(process.env.MNEMONIC);
+console.log(process.env.RINKBY_API_KEY);
 const provider = new HDWalletProvider(
   process.env.MNEMONIC,
   process.env.RINKBY_API_KEY
 );
+
 const web3 = new Web3(provider);
 
 const deploy = async () => {
